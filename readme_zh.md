@@ -162,7 +162,7 @@ Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
 
 ```php
 Flight::route('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
-    // This will match the following URLS:
+    // 这将匹配下列URL:
     // /blog/2012/12/10
     // /blog/2012/12
     // /blog/2012
@@ -198,15 +198,15 @@ Flight::route('*', function(){
 
 ```php
 Flight::route('/user/@name', function($name){
-    // Check some condition
+    // 检查一些条件
     if ($name != "Bob") {
-        // Continue to next route
+        // 继续下一个路由
         return true;
     }
 });
 
 Flight::route('/user/*', function(){
-    // This will get called
+    // 这里会被调用
 });
 ```
 
@@ -220,13 +220,12 @@ Flight::route('/', function($route){
     // 匹配的 HTTP methods（请求方式) 数组
     $route->methods;
 
-    // Array of named parameters 命名参数数组
+    // 命名参数数组
     $route->params;
 
-    // Matching regular expression 匹配正则表达式
+    // 匹配正则表达式
     $route->regex;
 
-    // Contains the contents of any '*' used in the URL pattern
     // 包含'*'在URL模式中使用的所有内容
     $route->splat;
 });
@@ -243,12 +242,12 @@ Flight 被设计成可扩展的框架。框架提供了一组默认的方法和�
 映射自定义的方法，您可以使用`map`函数：
 
 ```php
-// Map your method 映射你的方法
+// 映射你的方法
 Flight::map('hello', function($name){
     echo "hello $name!";
 });
 
-// Call your custom method 调用自定义的方法
+// 调用自定义的方法
 Flight::hello('Bob');
 ```
 
@@ -257,10 +256,10 @@ Flight::hello('Bob');
 注册自定义的类，你可以使用`register`函数：
 
 ```php
-// Register your class 注册自定义类
+// 注册自定义类
 Flight::register('user', 'User');
 
-// Get an instance of your class 得到一个自定义类的实例
+// 得到一个自定义类的实例
 $user = Flight::user();
 ```
 
@@ -271,11 +270,11 @@ $user = Flight::user();
 
 
 ```php
-// Register class with constructor parameters 注册带有构造函数参数的类
+// 注册带有构造函数参数的类
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
 
-// Get an instance of your class 取得自定义类的一个实例
-// This will create an object with the defined parameters 这将按参数创建一个对象
+// 取得自定义类的一个实例
+// 这将按参数创建一个对象
 //
 //     new PDO('mysql:host=localhost;dbname=test','user','pass');
 //
@@ -287,7 +286,7 @@ $db = Flight::db();
 回调函数接受一个参数，即新对象的实例。
 
 ```php
-// The callback will be passed the object that was constructed 回调将被构造的对象作为参数
+// 回调将被构造的对象作为参数
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'), function($db){
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
@@ -297,10 +296,10 @@ Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','p
 要得到一个类的新的实例，只需传递`false`参数：
 
 ```php
-// Shared instance of the class 共享实例（单一实例）
+// 共享实例（单一实例）
 $shared = Flight::db();
 
-// New instance of the class 新的实例
+// 新的实例
 $new = Flight::db(false);
 ```
 
@@ -318,7 +317,7 @@ Flight 可以让你重写其默认的功能，以满足自己的需要，
 
 ```php
 Flight::map('notFound', function(){
-    // Display custom 404 page 显示自定义的404页面
+    // 显示自定义的404页面
     include 'errors/404.html';
 });
 ```
@@ -327,10 +326,9 @@ Flight 还允许你替换框架的核心组件。
 例如，你可以用你自己的自定义类替换默认的路由器类：
 
 ```php
-// Register your custom class 注册你的自定义类
+// 注册你的自定义类
 Flight::register('router', 'MyRouter');
 
-// When Flight loads the Router instance, it will load your class
 // 当Flight加载路由实例，它会加载您的类
 $myrouter = Flight::router();
 ```
@@ -348,7 +346,7 @@ Flight允许你在调用方法前、后进行过滤。你不需要记忆预先�
 
 ```php
 function(&$params, &$output) {
-    // Filter code 过滤器处理的代码
+    // 过滤器处理的代码
 }
 ```
 
@@ -376,24 +374,24 @@ Flight::after('start', function(&$params, &$output){
 下面是个的过滤处理的例子：
 
 ```php
-// Map a custom method 映射自定义方法
+// 映射自定义方法
 Flight::map('hello', function($name){
     return "Hello, $name!";
 });
 
 // Add a before filter 添加一个前置过滤器
 Flight::before('hello', function(&$params, &$output){
-    // Manipulate the parameter 操作参数
+    // 操作参数
     $params[0] = 'Fred';
 });
 
 // Add an after filter 添加一个后置过滤器
 Flight::after('hello', function(&$params, &$output){
-    // Manipulate the output 控制输出
+    // 控制输出
     $output .= " Have a nice day!";
 });
 
-// Invoke the custom method 调用自定义的方法
+// 调用自定义的方法
 echo Flight::hello('Bob');
 ```
 
@@ -412,11 +410,11 @@ Flight::before('start', function(&$params, &$output){
 Flight::before('start', function(&$params, &$output){
     echo 'two';
 
-    // This will end the chain 这里将结束调用
+    // 这里将结束调用
     return false;
 });
 
-// This will not get called 这里将不会被调用
+// 这里将不会被调用
 Flight::before('start', function(&$params, &$output){
     echo 'three';
 });
@@ -595,114 +593,109 @@ Flight::map('render', function($template, $data){
 
 ## Errors and Exceptions 错误和异常
 
-All errors and exceptions are caught by Flight and passed to the `error` method.
-The default behavior is to send a generic `HTTP 500 Internal Server Error`
-response with some error information.
+所有的错误和异常捕获Flight都传递给`error`方法。
+默认发送 `HTTP 500 Internal Server Error` 应答以及一些错误信息。
 
-You can override this behavior for your own needs:
+你可以按自己的需求重写此行为：
 
 ```php
 Flight::map('error', function(Exception $ex){
-    // Handle error
+    // 处理错误
     echo $ex->getTraceAsString();
 });
 ```
 
-By default errors are not logged to the web server. You can enable this by
-changing the config:
+默认错误没有记录到服务器。
+如果想记录错误日志，你可以按以下方式修改:
 
 ```php
 Flight::set('flight.log_errors', true);
 ```
 
-## Not Found
+## Not Found 未找到页面
 
-When a URL can't be found, Flight calls the `notFound` method. The default
-behavior is to send an `HTTP 404 Not Found` response with a simple message.
+如果页面未找到，Flight调用`notFound`方法。
+默认会发送 `HTTP 404 Not Found` 应答和一些简单信息。
 
-You can override this behavior for your own needs:
+你可以按自己的需求重写此行为：
 
 ```php
 Flight::map('notFound', function(){
-    // Handle not found
+    // 处理未找到的错误
 });
 ```
 
-# Redirects
+# Redirects 重定向
 
-You can redirect the current request by using the `redirect` method and passing
-in a new URL:
+你可以通过`redirect`方法传递一个新的URL来重定向当前请求：
 
 ```php
 Flight::redirect('/new/location');
 ```
 
-By default Flight sends a HTTP 303 status code. You can optionally set a
-custom code:
+Flight 默认发送 HTTP 303 status code。 
+您也可以自己设置发送的HTTP status code：
 
 ```php
 Flight::redirect('/new/location', 401);
 ```
 
-# Requests
+# Requests 请求
 
-Flight encapsulates the HTTP request into a single object, which can be
-accessed by doing:
+Flight封装HTTP请求到一个单一的对象，
+通过以下方式访问它：
 
 ```php
 $request = Flight::request();
 ```
 
-The request object provides the following properties:
+请求（request）对象提供了以下属性：
 
 ```
-url - The URL being requested
-base - The parent subdirectory of the URL
-method - The request method (GET, POST, PUT, DELETE)
-referrer - The referrer URL
-ip - IP address of the client
-ajax - Whether the request is an AJAX request
-scheme - The server protocol (http, https)
-user_agent - Browser information
-body - Raw data from the request body
-type - The content type
-length - The content length
-query - Query string parameters
-data - Post parameters
-cookies - Cookie parameters
-files - Uploaded files
-secure - Whether the connection is secure
-accept - HTTP accept parameters
-proxy_ip - Proxy IP address of the client
+url - 被请求的URL
+base - The parent subdirectory of the URL该URL的父子目录
+method - 请求方式(GET, POST, PUT, DELETE)
+referrer - 来源URL
+ip - 客户端的ip地址
+ajax - 该请求是否是一个AJAX请求
+scheme - 服务器协议 (http, https)
+user_agent - 浏览器信息
+body - 请求 body 中的原始数据
+type - 内容类型
+length - 内容长度
+query - 查询字符串参数
+data - POST参数
+cookies - Cookie参数
+files - 上传的文件
+secure - 是否是安全链接
+accept - HTTP accept 参数
+proxy_ip - 客户端的代理服务器IP地址
 ```
 
-You can access the `query`, `data`, `cookies`, and `files` properties
-as arrays or objects.
+您可以以数组或是对象的方式访问 `query`, `data`, `cookies`, `files` 的属性。
 
-So, to get a query string parameter, you can do:
+例如，要获得一个查询字符串参数，你可以这样做：
 
 ```php
 $id = Flight::request()->query['id'];
 ```
 
-Or you can do:
+或者你也可以这样子:
 
 ```php
 $id = Flight::request()->query->id;
 ```
 
-# HTTP Caching
+# HTTP Caching HTTP缓存
 
-Flight provides built-in support for HTTP level caching. If the caching condition
-is met, Flight will return an HTTP `304 Not Modified` response. The next time the
-client requests the same resource, they will be prompted to use their locally
-cached version.
+Flight提供了HTTP级缓存的内置支持。如果缓存的条件得到满足，
+Flight 将返回`304 Not Modified`的HTTP响应。
+下一次客户端请求相同的资源， 他们将被提示使用其本地缓存版本。
 
-## Last-Modified
+## Last-Modified 最后修改
 
-You can use the `lastModified` method and pass in a UNIX timestamp to set the date
-and time a page was last modified. The client will continue to use their cache until
-the last modified value is changed.
+你可以使用`lastModified` 方法并传递一个UNIX时间戳（timestamp）来设定页面的最后修改时间。
+客户端将继续使用其缓存，直到最后修改的值被改变。
 
 ```php
 Flight::route('/news', function(){
@@ -713,8 +706,8 @@ Flight::route('/news', function(){
 
 ## ETag
 
-`ETag` caching is similar to `Last-Modified`, except you can specify any id you
-want for the resource:
+`ETag` 缓存类似于 `Last-Modified`，
+但是它可以为资源指定ID ：
 
 ```php
 Flight::route('/news', function(){
@@ -723,26 +716,26 @@ Flight::route('/news', function(){
 });
 ```
 
-Keep in mind that calling either `lastModified` or `etag` will both set and check the
-cache value. If the cache value is the same between requests, Flight will immediately
-send an `HTTP 304` response and stop processing.
+无论调用`lastModified` 或 `etag`都将设置和检查缓存值。
+如果缓存的值和请求之间是相同的，
+Flight 会立即发送一个`HTTP 304` 响应，并停止处理。
 
 # Stopping
 
-You can stop the framework at any point by calling the `halt` method:
+您可以在任何时候通过调用`halt`方法停止框架：
 
 ```php
 Flight::halt();
 ```
 
-You can also specify an optional `HTTP` status code and message:
+您也可以指定一个可选的`HTTP`状态码和消息：
 
 ```php
 Flight::halt(200, 'Be right back...');
 ```
 
-Calling `halt` will discard any response content up to that point. If you want to stop
-the framework and output the current response, use the `stop` method:
+调用`halt`将放弃任何回应的内容。
+如果你想停止的框架并且要返回当前响应，使用`stop` 方法：
 
 ```php
 Flight::stop();
@@ -750,91 +743,88 @@ Flight::stop();
 
 # JSON
 
-Flight provides support for sending JSON and JSONP responses. To send a JSON response you
-pass some data to be JSON encoded:
+Flight提供了一个发送JSON和JSONP响应支持。
+发送一个JSON响应，传递一些数据进行JSON编码：
 
 ```php
 Flight::json(array('id' => 123));
 ```
 
-For JSONP requests you, can optionally pass in the query parameter name you are
-using to define your callback function:
+对于JSONP请求，
+可选参数传递您用来定义回调函数的查询参数名：
 
 ```php
 Flight::jsonp(array('id' => 123), 'q');
 ```
 
-So, when making a GET request using `?q=my_func`, you should receive the output:
+例如，一个GET请求使用`?q=my_func` 你应该得到的输出:
 
 ```
 my_func({"id":123});
 ```
 
-If you don't pass in a query parameter name it will default to `jsonp`.
+如果不传递查询参数的名称将默认为 `jsonp`。
 
 
-# Configuration
+# Configuration 配置
 
-You can customize certain behaviors of Flight by setting configuration values
-through the `set` method.
+您可以通过`set`方法设置配置值，自定义Flight的某些行为。
 
 ```php
 Flight::set('flight.log_errors', true);
 ```
 
-The following is a list of all the available configuration settings:
+以下是所有可用的配置设置的列表：
 
-    flight.base_url - Override the base url of the request. (default: null)
-    flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
-    flight.log_errors - Log errors to the web server's error log file. (default: false)
-    flight.views.path - Directory containing view template files. (default: ./views)
+    flight.base_url - 重写请求的基本url。 (默认：null)
+    flight.handle_errors - 允许Flight在内部处理所有的错误。 (default: true)
+    flight.log_errors - 错误记录到Web服务器的错误日志文件。 (default: false)
+    flight.views.path - 包含视图模板文件的目录路径。 (default: ./views)
 
-# Framework Methods
+# Framework Methods 框架方法
 
-Flight is designed to be easy to use and understand. The following is the complete
-set of methods for the framework. It consists of core methods, which are regular
-static methods, and extensible methods, which are mapped methods that can be filtered
-or overridden.
+Flight 被设计为易于使用和理解。
+下面是一组完整的框架的方法。 
+它由核心方法，常规的静态方法，以及可扩展并且可以映射可以被过滤或覆盖的方法组成。
 
-## Core Methods
-
-```php
-Flight::map($name, $callback) // Creates a custom framework method.
-Flight::register($name, $class, [$params], [$callback]) // Registers a class to a framework method.
-Flight::before($name, $callback) // Adds a filter before a framework method.
-Flight::after($name, $callback) // Adds a filter after a framework method.
-Flight::path($path) // Adds a path for autoloading classes.
-Flight::get($key) // Gets a variable.
-Flight::set($key, $value) // Sets a variable.
-Flight::has($key) // Checks if a variable is set.
-Flight::clear([$key]) // Clears a variable.
-Flight::init() // Initializes the framework to its default settings.
-```
-
-## Extensible Methods
+## Core Methods 核心方法
 
 ```php
-Flight::start() // Starts the framework.
-Flight::stop() // Stops the framework and sends a response.
-Flight::halt([$code], [$message]) // Stop the framework with an optional status code and message.
-Flight::route($pattern, $callback) // Maps a URL pattern to a callback.
-Flight::redirect($url, [$code]) // Redirects to another URL.
-Flight::render($file, [$data], [$key]) // Renders a template file.
-Flight::error($exception) // Sends an HTTP 500 response.
-Flight::notFound() // Sends an HTTP 404 response.
-Flight::etag($id, [$type]) // Performs ETag HTTP caching.
-Flight::lastModified($time) // Performs last modified HTTP caching.
-Flight::json($data, [$code], [$encode]) // Sends a JSON response.
-Flight::jsonp($data, [$param], [$code], [$encode]) // Sends a JSONP response.
+Flight::map($name, $callback) // 创建一个自定义的框架方法。
+Flight::register($name, $class, [$params], [$callback]) // 注册一个类框架的方法。
+Flight::before($name, $callback) // 框架的方法之前添加一个过滤器。
+Flight::after($name, $callback) // 框架的方法之后添加一个过滤器。
+Flight::path($path) // 添加路径到自动加载的类路径。
+Flight::get($key) // 获取一个变量。
+Flight::set($key, $value) // 设置一个变量。
+Flight::has($key) // 检查一个变量是否被设置。
+Flight::clear([$key]) // 清除变量。
+Flight::init() // 按它的默认设置，初始化框架。
 ```
 
-Any custom methods added with `map` and `register` can also be filtered.
+## Extensible Methods 扩展方法
+
+```php
+Flight::start() // 启动框架。
+Flight::stop() // 停止框架并发送响应。
+Flight::halt([$code], [$message]) // 停止框架，可选参数状态码和消息。
+Flight::route($pattern, $callback) // 映射一个URL模式到回调函数。
+Flight::redirect($url, [$code]) // 重定向到另一个url。
+Flight::render($file, [$data], [$key]) // 渲染一个模板文件。
+Flight::error($exception) // 发送一个HTTP 500响应。
+Flight::notFound() // 发送一个HTTP 404响应。
+Flight::etag($id, [$type]) // 执行的ETag HTTP缓存。
+Flight::lastModified($time) // 执行last modified（最后修改）HTTP缓存
+Flight::json($data, [$code], [$encode]) // 发送一个JSON响应。
+Flight::jsonp($data, [$param], [$code], [$encode]) // 发送一个JSONP响应。
+```
+
+`map` 和 `register` 添加的任何自定义方法都可以被过滤。
 
 
-# Framework Instance
+# Framework Instance 框架实例
 
-Instead of running Flight as a global static class, you can optionally run it
-as an object instance.
+你可以选择作为一个对象实例运行它，而不是把Flight作为一个全局的静态类运行。
 
 ```php
 require 'flight/autoload.php';
@@ -850,5 +840,4 @@ $app->route('/', function(){
 $app->start();
 ```
 
-So instead of calling the static method, you would call the instance method with
-the same name on the Engine object.
+这样，你就可以调用与引擎对象同名的实例方法，而不是调用静态方法。
