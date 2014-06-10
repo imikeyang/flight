@@ -71,7 +71,7 @@ Flight::start();
 
 # Routing 路由
 
-Routing in Flight is done by matching a URL pattern with a callback function.
+Flight中路由是通过匹配RUL模式，调用回调函数进行的。
 
 ```php
 Flight::route('/', function(){
@@ -79,7 +79,7 @@ Flight::route('/', function(){
 });
 ```
 
-The callback can be any object that is callable. So you can use a regular function:
+回调可以是任何可以调用的对象。所以，你也可以采用先定义再注册的方式：
 
 ```php
 function hello(){
@@ -89,7 +89,7 @@ function hello(){
 Flight::route('/', 'hello');
 ```
 
-Or a class method:
+或者，定义类方法，再注册调用:
 
 ```php
 class Greeting {
@@ -101,13 +101,12 @@ class Greeting {
 Flight::route('/', array('Greeting','hello'));
 ```
 
-Routes are matched in the order they are defined. The first route to match a
-request will be invoked.
+路由按他们定义的顺序进行匹配。第一个匹配的路由将被调用。
 
-## Method Routing
+## Method Routing 请求方式的路由
 
-By default, route patterns are matched against all request methods. You can respond
-to specific methods by placing an identifier before the URL.
+默认情况下，路由模式匹配所有请求方式。
+你可以回应具体的一个请求方式，只要在URL之前放置一个标识符。
 
 ```php
 Flight::route('GET /', function(){
@@ -119,7 +118,7 @@ Flight::route('POST /', function(){
 });
 ```
 
-You can also map multiple methods to a single callback by using a `|` delimiter:
+您也可以一个回调对应多个请求方式，使用'|'分隔符：
 
 ```php
 Flight::route('GET|POST /', function(){
@@ -127,9 +126,9 @@ Flight::route('GET|POST /', function(){
 });
 ```
 
-## Regular Expressions
+## Regular Expressions 正则表达式
 
-You can use regular expressions in your routes:
+你可以在路由中使用正则表达式：
 
 ```php
 Flight::route('/user/[0-9]+', function(){
@@ -137,10 +136,10 @@ Flight::route('/user/[0-9]+', function(){
 });
 ```
 
-## Named Parameters
+## Named Parameters 命名参数
 
-You can specify named parameters in your routes which will be passed along to
-your callback function.
+你可以指定路由中的命名参数，参数将被传递
+您的回调函数。
 
 ```php
 Flight::route('/@name/@id', function($name, $id){
@@ -148,8 +147,7 @@ Flight::route('/@name/@id', function($name, $id){
 });
 ```
 
-You can also include regular expressions with your named parameters by using
-the `:` delimiter:
+你也可以在命名参数中使用正则表达式，通过`:`分割：
 
 ```php
 Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
@@ -158,7 +156,7 @@ Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
 });
 ```
 
-## Optional Parameters
+## Optional Parameters 可选参数
 
 You can specify named parameters that are optional for matching by wrapping
 segments in parentheses.
