@@ -340,21 +340,21 @@ $myrouter = Flight::router();
 
 # Filtering 过滤
 
-Flight allows you to filter methods before and after they are called. There are no
-predefined hooks you need to memorize. You can filter any of the default framework
-methods as well as any custom methods that you've mapped.
+Flight允许你在调用方法前、后进行过滤。你不需要记忆预先定义的hooks。
+您可以过滤框架的所有方法，包括你已经映射的方法以及任何自定义的方法。
 
-A filter function looks like this:
+
+过滤器函数看起来像这样:
 
 ```php
 function(&$params, &$output) {
-    // Filter code
+    // Filter code 过滤器处理的代码
 }
 ```
 
-Using the passed in variables you can manipulate the input parameters and/or the output.
+使用传入的变量，你可以操纵的输入、输出参数。
 
-You can have a filter run before a method by doing:
+你可以运行一个过滤器在方法调用之前：
 
 ```php
 Flight::before('start', function(&$params, &$output){
@@ -362,7 +362,7 @@ Flight::before('start', function(&$params, &$output){
 });
 ```
 
-You can have a filter run after a method by doing:
+你可以运行一个过滤器在方法调用之后：
 
 ```php
 Flight::after('start', function(&$params, &$output){
@@ -370,39 +370,39 @@ Flight::after('start', function(&$params, &$output){
 });
 ```
 
-You can add as many filters as you want to any method. They will be called in the
-order that they are declared.
+只要你想你可以添加任意多的过滤器。
+他们将按照被定义的顺序进行调用。
 
-Here's an example of the filtering process:
+下面是个的过滤处理的例子：
 
 ```php
-// Map a custom method
+// Map a custom method 映射自定义方法
 Flight::map('hello', function($name){
     return "Hello, $name!";
 });
 
-// Add a before filter
+// Add a before filter 添加一个前置过滤器
 Flight::before('hello', function(&$params, &$output){
-    // Manipulate the parameter
+    // Manipulate the parameter 操作参数
     $params[0] = 'Fred';
 });
 
-// Add an after filter
+// Add an after filter 添加一个后置过滤器
 Flight::after('hello', function(&$params, &$output){
-    // Manipulate the output
+    // Manipulate the output 控制输出
     $output .= " Have a nice day!";
 });
 
-// Invoke the custom method
+// Invoke the custom method 调用自定义的方法
 echo Flight::hello('Bob');
 ```
 
-This should display:
+应该得到如下显示:
 
     Hello Fred! Have a nice day!
 
-If you have defined multiple filters, you can break the chain by returning `false`
-in any of your filter functions:
+如果你定义了多个过滤器，
+你可以返回`false`来打断过滤器的链式调用：
 
 ```php
 Flight::before('start', function(&$params, &$output){
@@ -412,31 +412,30 @@ Flight::before('start', function(&$params, &$output){
 Flight::before('start', function(&$params, &$output){
     echo 'two';
 
-    // This will end the chain
+    // This will end the chain 这里将结束调用
     return false;
 });
 
-// This will not get called
+// This will not get called 这里将不会被调用
 Flight::before('start', function(&$params, &$output){
     echo 'three';
 });
 ```
 
-Note, core methods such as `map` and `register` cannot be filtered because they
-are called directly and not invoked dynamically.
+注意：核心方法`map` 、 `register`不能被过滤，因为他们不是动态调用的。
 
-# Variables
+# Variables 变量
 
-Flight allows you to save variables so that they can be used anywhere in your application.
+Flight可以让您保存变量，让他们可以在应用程序任何地方使用。
 
 ```php
-// Save your variable
+// 保存你的变量
 Flight::set('id', 123);
 
-// Elsewhere in your application
+// 你应用程序的其他地方
 $id = Flight::get('id');
 ```
-To see if a variable has been set you can do:
+要知道一个变量是否已经设置你可以这样做：
 
 ```php
 if (Flight::has('id')) {
@@ -444,23 +443,23 @@ if (Flight::has('id')) {
 }
 ```
 
-You can clear a variable by doing:
+你可以清除一个变量:
 
 ```php
-// Clears the id variable
+// 清除变量id
 Flight::clear('id');
 
-// Clears all variables
+// 清除所有变量
 Flight::clear();
 ```
 
-Flight also uses variables for configuration purposes.
+Flight也使用变量进行配置。
 
 ```php
 Flight::set('flight.log_errors', true);
 ```
 
-# Views
+# Views 视图
 
 Flight provides some basic templating functionality by default. To display a view
 template call the `render` method with the name of the template file and optional
