@@ -158,8 +158,7 @@ Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
 
 ## Optional Parameters 可选参数
 
-You can specify named parameters that are optional for matching by wrapping
-segments in parentheses.
+你可以用括号来指定哪些命名参数是可选的。
 
 ```php
 Flight::route('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
@@ -171,12 +170,12 @@ Flight::route('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
 });
 ```
 
-Any optional parameters that are not matched will be passed in as NULL.
+任何未匹配的可选参数都将传递NULL过去。
 
-## Wildcards
+## Wildcards 通配符
 
-Matching is only done on individual URL segments. If you want to match multiple
-segments you can use the `*` wildcard.
+匹配只是对应了URL部分情况。
+如果你想匹配更多，可以使用`*`通配符。
 
 ```php
 Flight::route('/blog/*', function(){
@@ -184,7 +183,7 @@ Flight::route('/blog/*', function(){
 });
 ```
 
-To route all requests to a single callback, you can do:
+所有请求路由到一个回调函数，你可以这样做：
 
 ```php
 Flight::route('*', function(){
@@ -192,7 +191,7 @@ Flight::route('*', function(){
 });
 ```
 
-## Passing
+## Passing 跳过
 
 You can pass execution on to the next matching route by returning `true` from
 your callback function.
