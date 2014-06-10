@@ -461,67 +461,63 @@ Flight::set('flight.log_errors', true);
 
 # Views 视图
 
-Flight provides some basic templating functionality by default. To display a view
-template call the `render` method with the name of the template file and optional
-template data:
+Flight 默认情况下提供一些基本的模板功能。 
+要显示一个视图模板调用`render`方法，传递模板文件参数和可选的模板数据的名称：
 
 ```php
 Flight::render('hello.php', array('name' => 'Bob'));
 ```
 
-The template data you pass in is automatically injected into the template and can
-be reference like a local variable. Template files are simply PHP files. If the
-content of the `hello.php` template file is:
+传递的模板数据被自动插入到模板类似于模板自己的变量。模板文件就是简单的PHP文件。  
+如果`hello.php` 模板的内容如下:
 
 ```php
 Hello, '<?php echo $name; ?>'!
 ```
 
-The output would be:
+输出将是：
 
     Hello, Bob!
 
-You can also manually set view variables by using the set method:
+您也可以手动使用set方法来设置视图的变量：
 
 ```php
 Flight::view()->set('name', 'Bob');
 ```
 
-The variable `name` is now available across all your views. So you can simply do:
+变量 `name` 现在就在你的视图里，你就可以直接渲染模板:
 
 ```php
 Flight::render('hello');
 ```
 
-Note that when specifying the name of the template in the render method, you can
-leave out the `.php` extension.
+请注意，在render方法中指定模板的名称时，可以忽略`.php`的扩展名。
 
-By default Flight will look for a `views` directory for template files. You can
-set an alternate path for your templates by setting the following config:
+Flight默认会在`views`目录下查找模板文件。 
+您可以通过设置，配置你的模板的路径：
 
 ```php
 Flight::set('flight.views.path', '/path/to/views');
 ```
 
-## Layouts
+## Layouts 布局
 
-It is common for websites to have a single layout template file with interchanging
-content. To render content to be used in a layout, you can pass in an optional
-parameter to the `render` method.
+一般网站都有一个提供内容替换的布局模板文件。
+呈现在布局中的内容, 你可以传递一个可选参数给`render`方法。
 
 ```php
 Flight::render('header', array('heading' => 'Hello'), 'header_content');
 Flight::render('body', array('body' => 'World'), 'body_content');
 ```
 
-Your view will then have saved variables called `header_content` and `body_content`.
-You can then render your layout by doing:
+现在，您的两个已经渲染的视图将保存在两个变量 `header_content` 和 `body_content`中。
+然后，渲染你的布局视图：
 
 ```php
 Flight::render('layout', array('title' => 'Home Page'));
 ```
 
-If the template files looks like this:
+如果模板文件看起来像这样：
 
 `header.php`:
 
@@ -549,7 +545,7 @@ If the template files looks like this:
 </html>
 ```
 
-The output would be:
+输出如下：
 ```html
 <html>
 <head>
@@ -562,18 +558,17 @@ The output would be:
 </html>
 ```
 
-## Custom Views
+## Custom Views 自定义视图
 
-Flight allows you to swap out the default view engine simply by registering your
-own view class. Here's how you would use the [Smarty](http://www.smarty.net/)
-template engine for your views:
+Flight允许你用自己的视图类替换默认的视图。
+参考这里使用[Smarty](http://www.smarty.net/)模板引擎作为你的视图:
 
 ```php
-// Load Smarty library
+// 加载Smarty library
 require './Smarty/libs/Smarty.class.php';
 
-// Register Smarty as the view class
-// Also pass a callback function to configure Smarty on load
+// 注册Smarty成为视图类
+// 传递一个回调函数，用于对加载Smarty的配置
 Flight::register('view', 'Smarty', array(), function($smarty){
     $smarty->template_dir = './templates/';
     $smarty->compile_dir = './templates_c/';
@@ -581,14 +576,14 @@ Flight::register('view', 'Smarty', array(), function($smarty){
     $smarty->cache_dir = './cache/';
 });
 
-// Assign template data
+// 指定模板变量数据
 Flight::view()->assign('name', 'Bob');
 
-// Display the template
+// 显示模板
 Flight::view()->display('hello.tpl');
 ```
 
-For completeness, you should also override Flight's default render method:
+为了完整起见，你应该重写Flight的默认渲染方法：
 
 ```php
 Flight::map('render', function($template, $data){
@@ -596,9 +591,9 @@ Flight::map('render', function($template, $data){
     Flight::view()->display($template);
 });
 ```
-# Error Handling
+# Error Handling 错误处理
 
-## Errors and Exceptions
+## Errors and Exceptions 错误和异常
 
 All errors and exceptions are caught by Flight and passed to the `error` method.
 The default behavior is to send a generic `HTTP 500 Internal Server Error`
