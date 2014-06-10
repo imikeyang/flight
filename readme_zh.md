@@ -191,10 +191,10 @@ Flight::route('*', function(){
 });
 ```
 
-## Passing 跳过
+## Passing 传递
 
-You can pass execution on to the next matching route by returning `true` from
-your callback function.
+您可以通过从返回`true`,从而传递到下一个匹配的路由执行
+您的回调函数。
 
 ```php
 Flight::route('/user/@name', function($name){
@@ -210,132 +210,135 @@ Flight::route('/user/*', function(){
 });
 ```
 
-## Route Info
+## Route Info 路由信息
 
-Your matching callback will be passed a route object which you can use to inspect
-route information.
+您匹配的回调将被传递路由的对象，你可以用它来检查
+路由信息。
 
 ```php
 Flight::route('/', function($route){
-    // Array of HTTP methods matched against
+    // 匹配的 HTTP methods（请求方式) 数组
     $route->methods;
 
-    // Array of named parameters
+    // Array of named parameters 命名参数数组
     $route->params;
 
-    // Matching regular expression
+    // Matching regular expression 匹配正则表达式
     $route->regex;
 
     // Contains the contents of any '*' used in the URL pattern
+    // 包含'*'在URL模式中使用的所有内容
     $route->splat;
 });
 ```
 
-# Extending
+# Extending 扩展
 
-Flight is designed to be an extensible framework. The framework comes with a set
-of default methods and components, but it allows you to map your own methods,
-register your own classes, or even override existing classes and methods.
+Flight 被设计成可扩展的框架。框架提供了一组默认的方法和组件，
+但是框架也允许你map（映射）你自己的方法，
+注册您自己的类，甚至重写现有的类和方法。
 
-## Mapping Methods
+## Mapping Methods 映射方法
 
-To map your own custom method, you use the `map` function:
+映射自定义的方法，您可以使用`map`函数：
 
 ```php
-// Map your method
+// Map your method 映射你的方法
 Flight::map('hello', function($name){
     echo "hello $name!";
 });
 
-// Call your custom method
+// Call your custom method 调用自定义的方法
 Flight::hello('Bob');
 ```
 
-## Registering Classes
+## Registering Classes 注册类
 
-To register your own class, you use the `register` function:
+注册自定义的类，你可以使用`register`函数：
 
 ```php
-// Register your class
+// Register your class 注册自定义类
 Flight::register('user', 'User');
 
-// Get an instance of your class
+// Get an instance of your class 得到一个自定义类的实例
 $user = Flight::user();
 ```
 
-The register method also allows you to pass along parameters to your class
-constructor. So when you load your custom class, it will come pre-initialized.
-You can define the constructor parameters by passing in an additional array.
-Here's an example of loading a database connection:
+该注册方法还允许将参数传递给类的构造函数。
+所以，加载你的自定义类，它会预先初始化。
+可以通过传递一个数组来定义构造函数的参数。
+下面是加载数据库连接的例子：
+
 
 ```php
-// Register class with constructor parameters
+// Register class with constructor parameters 注册带有构造函数参数的类
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
 
-// Get an instance of your class
-// This will create an object with the defined parameters
+// Get an instance of your class 取得自定义类的一个实例
+// This will create an object with the defined parameters 这将按参数创建一个对象
 //
 //     new PDO('mysql:host=localhost;dbname=test','user','pass');
 //
 $db = Flight::db();
 ```
 
-If you pass in an additional callback parameter, it will be executed immediately
-after class construction. This allows you to perform any set up procedures for your
-new object. The callback function takes one parameter, an instance of the new object.
+如果你传递一个回调函数参数，它将会在类构造完后立即执行。
+这可以让你在程序中设置刚刚构造好的对象。
+回调函数接受一个参数，即新对象的实例。
 
 ```php
-// The callback will be passed the object that was constructed
+// The callback will be passed the object that was constructed 回调将被构造的对象作为参数
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'), function($db){
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
 ```
 
-By default, every time you load your class you will get a shared instance.
-To get a new instance of a class, simply pass in `false` as a parameter:
+默认情况下，每次加载类时，你会得到一个共享实例。
+要得到一个类的新的实例，只需传递`false`参数：
 
 ```php
-// Shared instance of the class
+// Shared instance of the class 共享实例（单一实例）
 $shared = Flight::db();
 
-// New instance of the class
+// New instance of the class 新的实例
 $new = Flight::db(false);
 ```
 
-Keep in mind that mapped methods have precedence over registered classes. If you
-declare both using the same name, only the mapped method will be invoked.
+记住，map映射的方法优先于register注册类。
+如果您使用相同的名称声明两个，只有映射的方法将被调用。
 
-# Overriding
+# Overriding 重写
 
-Flight allows you to override its default functionality to suit your own needs,
-without having to modify any code.
+Flight 可以让你重写其默认的功能，以满足自己的需要，
+无需修改任何代码。
 
-For example, when Flight cannot match a URL to a route, it invokes the `notFound`
-method which sends a generic `HTTP 404` response. You can override this behavior
-by using the `map` method:
+例如，当Flight不能从URL匹配到路由, 他会调用 `notFound`
+方法，发送一个 `HTTP 404` 应答。
+你可以用 `map` 方法重写此行为:
 
 ```php
 Flight::map('notFound', function(){
-    // Display custom 404 page
+    // Display custom 404 page 显示自定义的404页面
     include 'errors/404.html';
 });
 ```
 
-Flight also allows you to replace core components of the framework.
-For example you can replace the default Router class with your own custom class:
+Flight 还允许你替换框架的核心组件。
+例如，你可以用你自己的自定义类替换默认的路由器类：
 
 ```php
-// Register your custom class
+// Register your custom class 注册你的自定义类
 Flight::register('router', 'MyRouter');
 
 // When Flight loads the Router instance, it will load your class
+// 当Flight加载路由实例，它会加载您的类
 $myrouter = Flight::router();
 ```
 
-Framework methods like `map` and `register` however cannot be overridden. You will
-get an error if you try to do so.
+框架的 `map` 和 `register` 不可以重写。
+如果你试图重写，会出现错误。
 
-# Filtering
+# Filtering 过滤
 
 Flight allows you to filter methods before and after they are called. There are no
 predefined hooks you need to memorize. You can filter any of the default framework
